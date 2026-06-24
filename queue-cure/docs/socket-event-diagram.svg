@@ -1,0 +1,121 @@
+<svg viewBox="0 0 1400 1180" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#0b3d3a"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#d9772e"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="1180" fill="#f6f3ec"/>
+
+  <!-- Title -->
+  <text x="700" y="42" text-anchor="middle" font-size="26" font-weight="700" fill="#0b3d3a">Socket Event Diagram — Queue Cure '26</text>
+  <text x="700" y="66" text-anchor="middle" font-size="13.5" fill="#566663">Express + Socket.IO server, single SQLite source of truth, three lifelines</text>
+
+  <!-- Lifelines -->
+  <line x1="180" y1="110" x2="180" y2="1140" stroke="#c9d4d1" stroke-width="2"/>
+  <line x1="700" y1="110" x2="700" y2="1140" stroke="#c9d4d1" stroke-width="2"/>
+  <line x1="1220" y1="110" x2="1220" y2="1140" stroke="#c9d4d1" stroke-width="2"/>
+
+  <!-- Lifeline headers -->
+  <rect x="70" y="78" width="220" height="42" rx="10" fill="#145c56"/>
+  <text x="180" y="105" text-anchor="middle" font-size="14.5" font-weight="700" fill="#fff">Receptionist Screen</text>
+
+  <rect x="540" y="78" width="320" height="42" rx="10" fill="#0b3d3a"/>
+  <text x="700" y="105" text-anchor="middle" font-size="13.5" font-weight="700" fill="#fff">Server (Express + Socket.IO + SQLite)</text>
+
+  <rect x="1100" y="78" width="240" height="42" rx="10" fill="#d9772e"/>
+  <text x="1220" y="105" text-anchor="middle" font-size="14.5" font-weight="700" fill="#fff">Patient Waiting Room (1..N)</text>
+
+  <!-- Section: connect -->
+  <rect x="60" y="132" width="1280" height="34" rx="6" fill="#dce9e6"/>
+  <text x="700" y="154" text-anchor="middle" font-size="12.5" fill="#0b3d3a" font-weight="600">On connect — server immediately emits queue:update to that socket only (no blank screen on load)</text>
+
+  <!-- patient:add flow -->
+  <text x="60" y="200" font-size="13" font-weight="700" fill="#0b3d3a">① Add patient</text>
+  <line x1="180" y1="215" x2="695" y2="215" stroke="#0b3d3a" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="190" y="208" font-size="12" fill="#3c4a47">patient:add { patientName, phone, priority }</text>
+
+  <rect x="640" y="225" width="120" height="56" rx="8" fill="#fffdf8" stroke="#c9d4d1"/>
+  <text x="700" y="242" text-anchor="middle" font-size="10.5" fill="#3c4a47">BEGIN TRANSACTION</text>
+  <text x="700" y="256" text-anchor="middle" font-size="10.5" fill="#3c4a47">INSERT token row</text>
+  <text x="700" y="270" text-anchor="middle" font-size="10.5" fill="#3c4a47">COMMIT</text>
+
+  <line x1="695" y1="300" x2="185" y2="300" stroke="#0b3d3a" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+  <text x="300" y="294" font-size="12" fill="#3c4a47">ack({ ok:true, token })</text>
+
+  <line x1="705" y1="318" x2="1215" y2="318" stroke="#d9772e" stroke-width="2.5" marker-end="url(#arrowAmber)"/>
+  <text x="760" y="312" font-size="12" fill="#9a4f10" font-weight="600">queue:update (full snapshot)</text>
+
+  <line x1="705" y1="334" x2="185" y2="334" stroke="#0b3d3a" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="280" y="328" font-size="12" fill="#3c4a47">queue:update (to sender too)</text>
+
+  <!-- Section divider -->
+  <rect x="60" y="362" width="1280" height="34" rx="6" fill="#f0d9bf"/>
+  <text x="700" y="384" text-anchor="middle" font-size="12.5" fill="#7a3d0f" font-weight="600">② Call Next — the concurrency-critical path</text>
+
+  <line x1="180" y1="430" x2="695" y2="430" stroke="#0b3d3a" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="190" y="422" font-size="12.5" fill="#3c4a47" font-weight="600">queue:call_next {}  (after confirm step)</text>
+
+  <rect x="600" y="442" width="200" height="150" rx="10" fill="#fffdf8" stroke="#0b3d3a" stroke-width="1.5"/>
+  <text x="700" y="462" text-anchor="middle" font-size="11" font-weight="700" fill="#0b3d3a">BEGIN TRANSACTION</text>
+  <text x="700" y="482" text-anchor="middle" font-size="10.5" fill="#3c4a47">mark current</text>
+  <text x="700" y="495" text-anchor="middle" font-size="10.5" fill="#3c4a47">in_consult → done</text>
+  <text x="700" y="515" text-anchor="middle" font-size="10.5" fill="#3c4a47">SELECT next waiting</text>
+  <text x="700" y="528" text-anchor="middle" font-size="10.5" fill="#3c4a47">(priority DESC, token# ASC)</text>
+  <text x="700" y="548" text-anchor="middle" font-size="10.5" fill="#3c4a47">UPDATE row → called</text>
+  <text x="700" y="561" text-anchor="middle" font-size="10.5" fill="#3c4a47">set now_serving_token_id</text>
+  <text x="700" y="581" text-anchor="middle" font-size="11" font-weight="700" fill="#0b3d3a">COMMIT</text>
+
+  <text x="820" y="500" font-size="10.5" fill="#c24545" font-weight="600">No other call_next</text>
+  <text x="820" y="513" font-size="10.5" fill="#c24545" font-weight="600">can interleave here —</text>
+  <text x="820" y="526" font-size="10.5" fill="#c24545" font-weight="600">single SQLite writer</text>
+  <text x="820" y="539" font-size="10.5" fill="#c24545" font-weight="600">serializes the race.</text>
+
+  <line x1="695" y1="610" x2="185" y2="610" stroke="#0b3d3a" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+  <text x="280" y="604" font-size="12" fill="#3c4a47">ack({ ok:true, called })</text>
+
+  <line x1="705" y1="630" x2="1215" y2="630" stroke="#d9772e" stroke-width="2.5" marker-end="url(#arrowAmber)"/>
+  <text x="760" y="624" font-size="12" fill="#9a4f10" font-weight="600">queue:update (full snapshot)</text>
+
+  <line x1="705" y1="650" x2="1215" y2="650" stroke="#d9772e" stroke-width="2.5" marker-end="url(#arrowAmber)"/>
+  <text x="745" y="644" font-size="12" fill="#9a4f10" font-weight="600">queue:now_serving { tokenNumber }</text>
+
+  <line x1="705" y1="670" x2="185" y2="670" stroke="#0b3d3a" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="280" y="664" font-size="12" fill="#3c4a47">queue:update (to sender too)</text>
+
+  <rect x="1080" y="690" width="280" height="50" rx="8" fill="#0b3d3a"/>
+  <text x="1220" y="710" text-anchor="middle" font-size="11.5" fill="#fff" font-weight="600">Token circle pulses,</text>
+  <text x="1220" y="726" text-anchor="middle" font-size="11.5" fill="#fff" font-weight="600">wait estimates recompute instantly</text>
+
+  <!-- Section: skip -->
+  <rect x="60" y="768" width="1280" height="34" rx="6" fill="#f6e3e1"/>
+  <text x="700" y="790" text-anchor="middle" font-size="12.5" fill="#8a2f2f" font-weight="600">③ No-show handling</text>
+
+  <line x1="180" y1="825" x2="695" y2="825" stroke="#0b3d3a" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="190" y="818" font-size="12" fill="#3c4a47">token:skip { tokenId }</text>
+
+  <line x1="705" y1="845" x2="1215" y2="845" stroke="#d9772e" stroke-width="2.5" marker-end="url(#arrowAmber)"/>
+  <text x="760" y="839" font-size="12" fill="#9a4f10" font-weight="600">queue:update (frees the now-serving slot)</text>
+
+  <!-- Section: settings -->
+  <rect x="60" y="880" width="1280" height="34" rx="6" fill="#e3efe8"/>
+  <text x="700" y="902" text-anchor="middle" font-size="12.5" fill="#1d5c41" font-weight="600">④ Average consult time updated</text>
+
+  <line x1="180" y1="935" x2="695" y2="935" stroke="#0b3d3a" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="190" y="928" font-size="12" fill="#3c4a47">settings:set_avg { minutes }</text>
+
+  <line x1="705" y1="955" x2="1215" y2="955" stroke="#d9772e" stroke-width="2.5" marker-end="url(#arrowAmber)"/>
+  <text x="760" y="949" font-size="12" fill="#9a4f10" font-weight="600">queue:update (new avgConsultMinutes + source label)</text>
+
+  <!-- Legend / payload box -->
+  <rect x="60" y="990" width="1280" height="150" rx="12" fill="#fffdf8" stroke="#c9d4d1"/>
+  <text x="80" y="1018" font-size="13" font-weight="700" fill="#0b3d3a">queue:update payload (sent to every client, every time)</text>
+  <text x="80" y="1042" font-size="11.5" font-family="monospace" fill="#3c4a47">{ date, avgConsultMinutes, avgSource: "computed"|"manual", avgSampleSize,</text>
+  <text x="80" y="1060" font-size="11.5" font-family="monospace" fill="#3c4a47">  nowServing, waiting: [...], waitingCount, doneCount, lastCalledAt, meta }</text>
+  <text x="80" y="1090" font-size="11.5" fill="#566663">Both screens re-render purely from this one object — there is no per-screen event type to keep in sync,</text>
+  <text x="80" y="1108" font-size="11.5" fill="#566663">which is what makes "live queue updates across both screens without refresh" hold for every mutation above.</text>
+  <text x="80" y="1130" font-size="11.5" fill="#566663">disconnect is a no-op: the server is stateless per-socket — all truth lives in SQLite, not in memory.</text>
+</svg>

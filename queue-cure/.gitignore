@@ -1,0 +1,30 @@
+### Dependencies ###
+node_modules/
+.npm-global/
+
+### Environment files — NEVER commit real secrets ###
+.env
+.env.local
+.env.*.local
+!.env.example
+
+### SQLite database files (runtime data, not source) ###
+server/data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+### Build output ###
+client/dist/
+client/build/
+
+### Logs ###
+*.log
+npm-debug.log*
+
+### OS/editor cruft ###
+.DS_Store
+.vscode/
+.idea/
+*.swp

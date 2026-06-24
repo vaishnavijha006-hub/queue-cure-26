@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+:root {
+  /* --- Color tokens --- */
+  --ink: #1a1a1a;
+  --paper: #f6f3ec;
+  --paper-raised: #fffdf8;
+  --teal-900: #0b3d3a;
+  --teal-700: #145c56;
+  --teal-100: #dce9e6;
+  --amber: #d9772e;
+  --amber-dim: #f0d9bf;
+  --green: #2e7d5b;
+  --green-bg: #e3efe8;
+  --red: #c24545;
+  --red-bg: #f6e3e1;
+  --line: rgba(11, 61, 58, 0.14);
+  --shadow: rgba(11, 61, 58, 0.12);
+
+  /* --- Type tokens --- */
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}
+
+input {
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
