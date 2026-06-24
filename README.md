@@ -6,6 +6,9 @@ Replaces paper token slips and shouting with a live receptionist dashboard and a
 
 🔗 **Live demo:** [queue-cure-26-two.vercel.app](https://queue-cure-26-two.vercel.app)
 
+> 🔑 **Receptionist PIN:** `1234`
+> Use this to unlock `/reception`. The `/waiting-room` screen needs no login — open it on any device.
+
 ![Socket Event Diagram](docs/socket-event-diagram.png)
 
 ---
